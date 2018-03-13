@@ -30,6 +30,24 @@ def extract_features(imgs, cspace='RGB', spatial_size=(32, 32),
                         hist_bins=32, hist_range=(0, 256)):
     # Create a list to append feature vectors to
     features = []
+    for item in imgs:
+        img = mpimg.imread(item)
+        if(cspace!='RGB'):
+            if(cspace=='HLS'):
+                new_img=cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+            if(cspace=='HSV'):
+                new_img=cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+            if(cspace=='LUV'):
+                new_img=cv2.cvtColor(img, cv2.COLOR_RGB2LUV)
+            if(cspace=='YUV'):
+                new_img=cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
+            if(cspace=='YCrCb'):
+                new_img=cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
+        else:
+            new_img=img.copy()
+        sp_color_features=bin_spatial(new_img, size=spatial_size)
+        color_hist_features=color_hist(new_img, nbins=hist_bins, bins_range=hist_range)
+        features.append(np.concatenate((sp_color_features,color_hist_features)))
     # Iterate through the list of images
         # Read in each one by one
         # apply color conversion if other than 'RGB'
